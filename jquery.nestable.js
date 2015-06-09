@@ -27,22 +27,26 @@
     })();
 
     var defaults = {
-            listNodeName    : 'ol',
-            itemNodeName    : 'li',
-            rootClass       : 'dd',
-            listClass       : 'dd-list',
-            itemClass       : 'dd-item',
-            dragClass       : 'dd-dragel',
-            handleClass     : 'dd-handle',
-            collapsedClass  : 'dd-collapsed',
-            placeClass      : 'dd-placeholder',
-            noDragClass     : 'dd-nodrag',
-            emptyClass      : 'dd-empty',
-            expandBtnHTML   : '<button data-action="expand" type="button">Expand</button>',
-            collapseBtnHTML : '<button data-action="collapse" type="button">Collapse</button>',
-            group           : 0,
-            maxDepth        : 5,
-            threshold       : 20
+            listNodeName      : 'ol',
+            itemNodeName      : 'li',
+            rootClass         : 'dd',
+            listClass         : 'dd-list',
+            itemClass         : 'dd-item',
+            dragClass         : 'dd-dragel',
+            handleClass       : 'dd-handle',
+            collapsedClass    : 'dd-collapsed',
+            placeClass        : 'dd-placeholder',
+            noDragClass       : 'dd-nodrag',
+            emptyClass        : 'dd-empty',
+            expandBtnHTML     : '<button data-action="expand" type="button">Expand</button>',
+            collapseBtnHTML   : '<button data-action="collapse" type="button">Collapse</button>',
+            group             : 0,
+            maxDepth          : 5,
+            threshold         : 20,
+            inputField        : '<input type="text" placeholder="Text" class="inputField">',
+            addRowAboveButton : '<a title="Add Row Above" class="arrow-up pull-right" data-action="addRowAbove"></a>',
+            addRowBelowButton : '<a title="Add Row Below" class="arrow-down pull-right" data-action="addRowBelow"></a>',
+            removeRowButton   : '<a title="Remove Row" class="removeButton pull-right" data-action="removeRow">X</a>'
         };
 
     function Plugin(element, options)
@@ -81,6 +85,26 @@
                 }
                 if (action === 'expand') {
                     list.expandItem(item);
+                }
+            });
+
+            list.el.on('click', 'a', function(e) {
+                if (list.dragEl) {
+                    return;
+                }
+                var target = $(e.currentTarget),
+                    action = target.data('action'),
+                    item   = target.parent().parent(list.options.itemNodeName);
+
+                if (action === 'addRowAbove') {
+                    list.addRowAbove(list,item);
+                }
+                if (action === 'addRowBelow') {
+                    list.addRowBelow(list,item);
+                }
+                if (action === 'removeRow') {
+                    item.remove();
+                    list.el.trigger('change');
                 }
             });
 
@@ -455,6 +479,96 @@
                     this.hasNewRoot = this.el[0] !== this.dragRootEl[0];
                 }
             }
+        },
+
+        addRowAbove: function(list,item) {
+            var nestableList = list.el.attr("id");
+            var idValue = parseInt($("#"+nestableList+" ol > li").length) + 1;
+
+            var rowHtml = '<li class="dd-item dd3-item" data-id="'+idValue+'">'+
+                            '<div class="dd-handle dd3-handle">&nbsp;</div>'+
+                            '<div class="dd3-content">'+
+                                this.options.inputField+
+                                this.options.removeRowButton+
+                                this.options.addRowAboveButton+
+                                this.options.addRowBelowButton+
+                            '</div>'+
+                          '</li>';
+            rowHtml = $(rowHtml);
+            
+            $(rowHtml).insertBefore(item);
+            list.el.trigger('change');
+        },
+
+        addRowBelow: function(list,item) {
+            var nestableList = list.el.attr("id");
+            var idValue = parseInt($("#"+nestableList+" ol > li").length) + 1;
+
+            var rowHtml = '<li class="dd-item dd3-item" data-id="'+idValue+'">'+
+                            '<div class="dd-handle dd3-handle">&nbsp;</div>'+
+                            '<div class="dd3-content">'+
+                                this.options.inputField+
+                                this.options.removeRowButton+
+                                this.options.addRowAboveButton+
+                                this.options.addRowBelowButton+
+                            '</div>'+
+                          '</li>';
+            rowHtml = $(rowHtml);
+
+            $(rowHtml).insertAfter(item);
+            list.el.trigger('change');
+        },
+
+        serializeText: function() {
+            var data,
+                depth = 0,
+                list  = this;
+                step  = function(level, depth)
+                {
+                    var array = [ ],
+                        items = level.children(list.options.itemNodeName);
+                    items.each(function()
+                    {
+                        var li   = $(this),
+                            item = {},
+                            sub  = li.children(list.options.listNodeName);
+                        item["text"] = li.children(".dd3-content").children(".inputField").val();
+                        /*item["text"] = */
+                        if (sub.length) {
+                            item.children = step(sub, depth + 1);
+                        }
+                        array.push(item);
+                    });
+                    return array;
+                };
+            data = step(list.el.find(list.options.listNodeName).first(), depth);
+            return data;
+        },
+
+        serializeWithText: function() {
+            var data,
+                depth = 0,
+                list  = this;
+                step  = function(level, depth)
+                {
+                    var array = [ ],
+                        items = level.children(list.options.itemNodeName);
+                    items.each(function()
+                    {
+                        var li   = $(this),
+                            item = $.extend({}, li.data()),
+                            sub  = li.children(list.options.listNodeName);
+                        item["text"] = li.children(".dd3-content").children(".inputField").val();
+                        /*item["text"] = */
+                        if (sub.length) {
+                            item.children = step(sub, depth + 1);
+                        }
+                        array.push(item);
+                    });
+                    return array;
+                };
+            data = step(list.el.find(list.options.listNodeName).first(), depth);
+            return data;
         }
 
     };

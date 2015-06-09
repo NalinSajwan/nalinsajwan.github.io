@@ -3,7 +3,9 @@ Nestable
 
 ## PLEASE NOTE
 
-**I cannot provide any support or guidance beyond this README. If this code helps you that's great but I have no plans to develop Nestable beyond this demo (it's not a final product and has limited functionality). I cannot reply to any requests for help.**
+~~I cannot provide any support or guidance beyond this README. If this code helps you that's great but I have no plans to develop Nestable beyond this demo (it's not a final product and has limited functionality). I cannot reply to any requests for help.~~.
+
+**Updated code for supporting a field for data input & dynamically add new nestble row! pull requests are welcome!**
 
 * * *
 
@@ -61,6 +63,14 @@ The serialised JSON for the example above would be:
 
     [{"id":1},{"id":2},{"id":3,"children":[{"id":4},{"id":5}]}]
 
+You can also get a serialised object with `text inputs` for each item that have input text fields in HTML.
+
+    $('#nestable3').nestable('serializeText');
+
+The serialised JSON for the example above would be:
+
+    [{"text":"Item 1"},{"text":"Item 2"},{"text":"Item 3","children":[{"text":"Item 4"},{"text":"Item 5"},{"text":"Item 6"}]}]
+
 ### Configuration
 
 You can change the follow options:
@@ -82,10 +92,17 @@ These advanced config options are also available:
 * `emptyClass` The class used for empty list placeholder elements (default `'dd-empty'`)
 * `expandBtnHTML` The HTML text used to generate a list item expand button (default `'<button data-action="expand">Expand></button>'`)
 * `collapseBtnHTML` The HTML text used to generate a list item collapse button (default `'<button data-action="collapse">Collapse</button>'`)
+* `addRowAboveButton` The HTML text use to add a new nestable row above the clicked row (default `'<a title="Add Row Above" class="arrow-up pull-right" data-action="addRowAbove"></a>'`)
+* `addRowBelowButton` The HTML text use to add a new nestable row below the clicked row (default `'<a title="Add Row Below" class="arrow-down pull-right" data-action="addRowBelow"></a>'`)
+* `removeRowButton` The HTML text use to remove a nestable row from a list (default `'<a title="Remove Row" class="removeButton pull-right" data-action="removeRow">X</a>'`)
 
 **Inspect the [Nestable Demo](http://dbushell.github.com/Nestable/) for guidance.**
 
 ## Change Log
+
+### 9th June 2015
+* Added support for text field to store data input.
+* Added methods to add netable row dynamically.
 
 ### 15th October 2012
 
@@ -102,6 +119,8 @@ These advanced config options are also available:
 
 * * *
 
-Author: David Bushell [http://dbushell.com](http://dbushell.com/) [@dbushell](http://twitter.com/dbushell/)
+Original Author: David Bushell [http://dbushell.com](http://dbushell.com/) [@dbushell](http://twitter.com/dbushell/)
+
+New Author     : Nalin Sajwan  [@NalinSajwan](https://in.linkedin.com/in/nalinsajwan)
 
 Copyright © 2012 David Bushell | BSD & MIT license
