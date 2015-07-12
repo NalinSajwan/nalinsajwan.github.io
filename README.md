@@ -96,7 +96,7 @@ These advanced config options are also available:
 * `addRowBelowButton` The HTML text use to add a new nestable row below the clicked row (default `'<a title="Add Row Below" class="arrow-down pull-right" data-action="addRowBelow"></a>'`)
 * `removeRowButton` The HTML text use to remove a nestable row from a list (default `'<a title="Remove Row" class="removeButton pull-right" data-action="removeRow">X</a>'`)
 
-**Inspect the [Nestable Demo](http://nalinsajwan.github.io./) for guidance.**
+**Inspect the [Nestable Demo](http://nalinsajwan.github.io) for guidance.**
 
 ## Change Log
 
